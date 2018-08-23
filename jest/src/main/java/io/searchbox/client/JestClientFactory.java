@@ -113,7 +113,7 @@ public class JestClientFactory {
     }
 
     private CloseableHttpClient createHttpClient(HttpClientConnectionManager connectionManager) {
-        return configureHttpClient(
+      return configureHttpClient(
                 HttpClients.custom()
                         .setConnectionManager(connectionManager)
                         .setDefaultRequestConfig(getRequestConfig())

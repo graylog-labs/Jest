@@ -1,9 +1,9 @@
 package io.searchbox.indices.aliases;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
+
+import org.junit.Test;
 
 public class GetAliasesTest {
 
@@ -12,7 +12,7 @@ public class GetAliasesTest {
         GetAliases getAliases = new GetAliases.Builder().addIndex("twitter").build();
 
         assertEquals("GET", getAliases.getRestMethodName());
-        assertEquals("twitter/_aliases", getAliases.getURI());
+        assertEquals("twitter/_alias", getAliases.getURI());
     }
 
     @Test
