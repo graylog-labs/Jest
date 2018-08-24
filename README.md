@@ -32,6 +32,7 @@ Required steps to create a new release and publish it on maven central.
 1. `git add -u` - stage modified `pom.xml` files for commit
 1. `git commit -m 'Set version 2.4.12+jackson'` - commit the new version
 1. `git push` - push changes to GitHub
+1. `git push --tags` - push created tags to GitHub
 
 Make sure you have a working GPG setup to sign the artifacts and you have valid sonatype credentials for the
 `ossrh` serverId in your `~/.m2/settings.xml`.
