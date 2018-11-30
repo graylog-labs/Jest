@@ -1,5 +1,6 @@
 package io.searchbox.indices;
 
+import com.google.common.collect.ImmutableMap;
 import io.searchbox.action.AbstractAction;
 import io.searchbox.action.GenericResultAbstractAction;
 
@@ -7,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import static com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * Performs the analysis process on a text and return the tokens breakdown of the text.
@@ -21,6 +24,25 @@ public class Analyze extends GenericResultAbstractAction {
 
         this.indexName = builder.index;
         this.payload = Collections.singletonMap("text", builder.textToAnalyze);
+
+        final ImmutableMap.Builder<String, Object> payloadBuilder = ImmutableMap.builder();
+        payloadBuilder.put("text", builder.textToAnalyze);
+
+        if (!isNullOrEmpty(builder.analyzer)) {
+            payloadBuilder.put("analyzer", builder.analyzer);
+        }
+        if (!isNullOrEmpty(builder.field)) {
+            payloadBuilder.put("field", builder.field);
+        }
+        if (!isNullOrEmpty(builder.tokenizer)) {
+            payloadBuilder.put("tokenizer", builder.tokenizer);
+        }
+        if (builder.filter != null && !builder.filter.isEmpty()) {
+            payloadBuilder.put("filter", builder.filter);
+        }
+
+        this.payload = payloadBuilder.build();
+
         setURI(buildURI());
     }
 
@@ -37,6 +59,10 @@ public class Analyze extends GenericResultAbstractAction {
     public static class Builder extends AbstractAction.Builder<Analyze, Builder> {
         private String index;
         private List<String> textToAnalyze = new ArrayList<String>();
+        private String analyzer;
+        private String field;
+        private String tokenizer;
+        private List<String> filter = new ArrayList<>();
 
         public Builder index(String index) {
             this.index = index;
@@ -54,22 +80,26 @@ public class Analyze extends GenericResultAbstractAction {
         }
 
         public Builder analyzer(String analyzer) {
-            return setParameter("analyzer", analyzer);
+            this.analyzer = analyzer;
+            return this;
         }
 
         /**
          * The analyzer can be derived based on a field mapping.
          */
         public Builder field(String field) {
-            return setParameter("field", field);
+            this.field = field;
+            return this;
         }
 
         public Builder tokenizer(String tokenizer) {
-            return setParameter("tokenizer", tokenizer);
+            this.tokenizer = tokenizer;
+            return this;
         }
 
         public Builder filter(String filter) {
-            return setParameter("filters", filter);
+            this.filter.add(filter);
+            return this;
         }
 
         /**

@@ -1,6 +1,7 @@
 package io.searchbox.indices;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.google.common.collect.ImmutableList;
 import org.junit.Test;
 
@@ -12,23 +13,25 @@ import static org.junit.Assert.assertNotEquals;
  */
 public class AnalyzeTest {
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper().configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
 
     @Test
-    public void testBasicUrlGeneration() {
+    public void testBasicUrlGeneration() throws Exception {
         Analyze analyze = new Analyze.Builder()
                 .analyzer("standard")
                 .build();
-        assertEquals("/_analyze?analyzer=standard", analyze.getURI());
+        assertEquals("/_analyze", analyze.getURI());
+        assertEquals("{\"analyzer\":\"standard\",\"text\":[]}", analyze.getData(objectMapper));
     }
 
     @Test
-    public void testUrlGenerationWithCustomTransientAnalyzer() {
+    public void testUrlGenerationWithCustomTransientAnalyzer() throws Exception {
         Analyze analyze = new Analyze.Builder()
                 .tokenizer("keyword")
                 .filter("lowercase")
                 .build();
-        assertEquals("/_analyze?tokenizer=keyword&filters=lowercase", analyze.getURI());
+        assertEquals("/_analyze", analyze.getURI());
+        assertEquals("{\"filter\":[\"lowercase\"],\"text\":[],\"tokenizer\":\"keyword\"}", analyze.getData(objectMapper));
     }
 
     @Test
@@ -40,21 +43,23 @@ public class AnalyzeTest {
     }
 
     @Test
-    public void testUrlGenerationWithIndexAndAnalyzer() {
+    public void testUrlGenerationWithIndexAndAnalyzer() throws Exception {
         Analyze analyze = new Analyze.Builder()
                 .index("test")
                 .analyzer("whitespace")
                 .build();
-        assertEquals("test/_analyze?analyzer=whitespace", analyze.getURI());
+        assertEquals("test/_analyze", analyze.getURI());
+        assertEquals("{\"analyzer\":\"whitespace\",\"text\":[]}", analyze.getData(objectMapper));
     }
 
     @Test
-    public void testUrlGenerationWithIndexAndFieldMapping() {
+    public void testUrlGenerationWithIndexAndFieldMapping() throws Exception {
         Analyze analyze = new Analyze.Builder()
                 .index("test")
                 .field("obj1.field1")
                 .build();
-        assertEquals("test/_analyze?field=obj1.field1", analyze.getURI());
+        assertEquals("test/_analyze", analyze.getURI());
+        assertEquals("{\"field\":\"obj1.field1\",\"text\":[]}", analyze.getData(objectMapper));
     }
 
     @Test
