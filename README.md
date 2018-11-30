@@ -30,7 +30,7 @@ Required steps to create a new release and publish it on maven central.
 1. `mvn -Psign-artifacts clean install deploy` - build, sign and deploy the artifacts
 1. `mvn -DnewVersion="2.4.13+jackson-SNAPSHOT" versions:set versions:commit` - set the new development version
 1. `git add -u` - stage modified `pom.xml` files for commit
-1. `git commit -m 'Set version 2.4.12+jackson'` - commit the new version
+1. `git commit -m 'Set version 2.4.16+jackson-SNAPSHOT'` - commit the new version
 1. `git push` - push changes to GitHub
 1. `git push --tags` - push created tags to GitHub
 
